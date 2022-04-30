@@ -1,0 +1,50 @@
+﻿@page "/queue"
+<h3>Open Orders Queue</h3>
+@using BigCleopatraBurgers.Services;
+@using BigCleopatraBurgers.Models;
+@using BigCleopatraBurgers.Models.Enums;
+@inject ProductOrderService ProductorderService
+@if (Orders is null || !Orders.Any())
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table id="tblQueuedOrders" class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Order Number</th>
+                <th>Calculated Order Total</th>
+                <th>Final Order Total</th>
+                <th>Order Date</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Orders)
+            {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.OrderNumber</td>
+                <td>$@item.CalculateTotal()</td>
+                <td>$@item.Total</td>
+                <td>@item.OrderDateTime</td>
+                <td><a class="btn btn-info" href="details/@item.OrderNumber">View Details</a></td>
+            </tr>
+            }
+        </tbody>
+
+    </table>
+}
+@code {
+    private IEnumerable<Order> Orders;
+    protected override async Task OnInitializedAsync()
+    {
+        Orders = (await ProductorderService.GetOrdersAsync())
+            .Where(o => o.Status.Equals(Status.Pending))
+            .OrderByDescending(o => o.OrderDateTime);
+    }
+}
+
+

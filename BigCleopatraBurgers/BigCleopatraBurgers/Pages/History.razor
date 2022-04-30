@@ -1,0 +1,66 @@
+﻿@page "/history"
+@using BigCleopatraBurgers.Services;
+@using BigCleopatraBurgers.Models;
+@inject ProductOrderService ProductorderService
+<h3>Order History</h3>
+@if (Orders is null || !Orders.Any())
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table id="tblOrders" class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Order Number</th>
+                <th>Order Total</th>
+                <th>Order Date</th>
+                <th>Order Status</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Orders)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.OrderNumber</td>
+                    <td>$@item.Total</td>
+                    <td>@item.OrderDateTime</td>
+                    <td>@item.Status</td>
+                    <td><a class="btn btn-info" href="details/@item.OrderNumber">View Details</a></td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+}
+@code {
+    private IEnumerable<Order> Orders;
+    protected override async Task OnInitializedAsync()
+    {
+        Orders = await ProductorderService.GetOrdersAsync();
+    }
+
+    public void FilterOrders(string inputValue)
+    {
+        if (string.IsNullOrWhiteSpace(inputValue))
+        {
+            return;
+        }
+        var ordersQuery = Orders;
+
+        if (Orders.Any(o => o.Id == int.Parse(inputValue)))
+        {
+            ordersQuery = Orders.Where(o => o.Id == int.Parse(inputValue));
+        }
+        if (Orders.Any(o => o.OrderNumber == Guid.Parse(inputValue)))
+        {
+            ordersQuery = Orders.Where(o => o.OrderNumber == Guid.Parse(inputValue));
+        }
+        Orders = ordersQuery.AsEnumerable();
+        StateHasChanged();
+    }
+}
+

@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>aspnet-BigCleopatraBurgers-58F6A744-A2E1-4EAB-BF35-82637C4727DA</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="ElectronNET.API" />
+    <None Remove="Services\" />
+    <None Remove="Repositories\" />
+    <None Remove="Models\" />
+    <None Remove="Models\Enums\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.16" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.16" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.16" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.16" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.16" />
+    <PackageReference Include="ElectronNET.API" Version="13.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\" />
+    <Folder Include="Repositories\" />
+    <Folder Include="Models\" />
+    <Folder Include="Models\Enums\" />
+  </ItemGroup>
+</Project>

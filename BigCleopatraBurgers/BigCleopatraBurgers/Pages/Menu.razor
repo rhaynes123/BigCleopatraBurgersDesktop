@@ -1,0 +1,119 @@
+﻿@page "/menu"
+@using BigCleopatraBurgers.Services;
+@using BigCleopatraBurgers.Models;
+@inject ProductMenuService ProductmenuService
+@inject ProductOrderService ProductorderService
+@inject NavigationManager NavManager
+@inject IJSRuntime JsRuntime;
+@using ElectronNET.API
+@using ElectronNET.API.Entities
+<div class="text-center">
+    <h3>Menu</h3>
+    @if (Products is null || !Products.Any())
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <table id="tblProduct" class="table">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Add To Order</th>
+                    <th>Remove From Order</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Products)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>$@item.Price</td>
+                        <td><button class="btn btn-success" @onclick="@( () => AddToOrder(item) )">Add</button></td>
+                        <td><button class="btn btn-danger" @onclick="@( () => RemoveFromOrder(item) )">Remove</button></td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    }
+    <button class="btn btn-primary" @onclick="Submit">Submit Order(@Order.OrderedProducts.Count)</button>
+</div>
+
+
+@code {
+    private IEnumerable<Product> Products;
+    private Order Order = new();
+    private bool IsElectron = HybridSupport.IsElectronActive;
+    protected override async Task OnInitializedAsync()
+    {
+        Products = await ProductmenuService.GetProductsAsync();
+    }
+
+    private void AddToOrder(Product product)
+    {
+        Order.AddProduct(product);
+    }
+
+    private void RemoveFromOrder(Product product)
+    {
+        Order.RemoveProduct(product);
+    }
+
+    private async Task Submit()
+    {
+        if (Order is null || !Order.OrderedProducts.Any())
+        {
+            return;
+        }
+        bool confirmed = await ConfirmationMessage();
+        if (!confirmed)
+        {
+            return;
+        }
+
+        bool result = await ProductorderService.CreateOrderAsync(Order);
+        if (!result)
+        {
+            return;
+        }
+        NavManager.NavigateTo("/confirmation");
+
+    }
+    private async Task<bool> ConfirmationMessage()
+    {
+        string ConfirmationMessage = "Are you sure the Order Is Complete?";
+        if (IsElectron)
+        {
+            return await ShowElectronConfirmationBox(ConfirmationMessage);
+        }
+        return await ShowJavascriptConfirmation(ConfirmationMessage);
+
+    }
+    private async Task<bool> ShowJavascriptConfirmation(string message)
+    {
+        return await JsRuntime.InvokeAsync<bool>("confirm", message);
+    }
+    private async Task<bool> ShowElectronConfirmationBox(string message)
+    {
+        MessageBoxOptions option = new MessageBoxOptions(message);
+        option.Type = MessageBoxType.question;
+        option.Buttons = new string[] { "No", "Yes" };
+        MessageBoxResult response = await Electron.Dialog.ShowMessageBoxAsync(option);
+
+        switch (response.Response)
+        {
+            case 1:
+                return true;
+            case 0:
+                return false;
+            default:
+                throw new ArgumentException(message: "Unsupported Option");
+
+        }
+
+    }
+
+}
+
