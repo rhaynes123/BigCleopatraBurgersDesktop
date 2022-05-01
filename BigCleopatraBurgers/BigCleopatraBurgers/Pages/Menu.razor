@@ -7,6 +7,8 @@
 @inject IJSRuntime JsRuntime;
 @using ElectronNET.API
 @using ElectronNET.API.Entities
+@attribute [Authorize]
+
 <div class="text-center">
     <h3>Menu</h3>
     @if (Products is null || !Products.Any())

@@ -2,6 +2,7 @@
 @using BigCleopatraBurgers.Services;
 @using BigCleopatraBurgers.Models;
 @inject ProductOrderService ProductorderService
+@attribute [Authorize]
 <h3>Order History</h3>
 @if (Orders is null || !Orders.Any())
 {

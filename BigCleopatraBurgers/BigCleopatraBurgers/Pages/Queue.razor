@@ -4,6 +4,7 @@
 @using BigCleopatraBurgers.Models;
 @using BigCleopatraBurgers.Models.Enums;
 @inject ProductOrderService ProductorderService
+@attribute [Authorize]
 @if (Orders is null || !Orders.Any())
 {
     <p><em>Loading...</em></p>
@@ -24,14 +25,14 @@ else
         <tbody>
             @foreach (var item in Orders)
             {
-            <tr>
-                <td>@item.Id</td>
-                <td>@item.OrderNumber</td>
-                <td>$@item.CalculateTotal()</td>
-                <td>$@item.Total</td>
-                <td>@item.OrderDateTime</td>
-                <td><a class="btn btn-info" href="details/@item.OrderNumber">View Details</a></td>
-            </tr>
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.OrderNumber</td>
+                    <td>$@item.CalculateTotal()</td>
+                    <td>$@item.Total</td>
+                    <td>@item.OrderDateTime</td>
+                    <td><a class="btn btn-info" href="details/@item.OrderNumber">View Details</a></td>
+                </tr>
             }
         </tbody>
 

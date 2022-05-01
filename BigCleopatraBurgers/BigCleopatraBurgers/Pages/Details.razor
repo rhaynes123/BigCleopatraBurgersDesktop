@@ -5,6 +5,7 @@
 @using BigCleopatraBurgers.Models.Enums;
 @inject ProductOrderService ProductorderService
 @inject NavigationManager NavManager
+@attribute [Authorize]
 <h3>Order Details</h3>
 <p>Order Number: @Order.OrderNumber</p>
 <p>Order Date: @Order.OrderDateTime</p>

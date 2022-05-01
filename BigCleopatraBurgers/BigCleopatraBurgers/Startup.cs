@@ -49,6 +49,11 @@ namespace BigCleopatraBurgers
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddElectron();
+            services.AddStackExchangeRedisCache(opt =>
+            {
+                opt.Configuration = Configuration.GetConnectionString("RedisConnection");
+                opt.InstanceName = "Big_Cleopatra_Burgers";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
