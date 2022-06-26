@@ -46,6 +46,8 @@ namespace BigCleopatraBurgers
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddScoped<ProductMenuService>();
             services.AddScoped<ProductOrderService>();
+            services.AddScoped<IQueueProducerService, QueueProducerService>();
+            services.AddHostedService<QueueConsumerService>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddElectron();

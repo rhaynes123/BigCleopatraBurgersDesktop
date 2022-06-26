@@ -45,7 +45,20 @@ else
         Orders = (await ProductorderService.GetOrdersAsync())
             .Where(o => o.Status.Equals(Status.Pending))
             .OrderByDescending(o => o.OrderDateTime);
+
+        @*(bool accessed, Order pendingOrder) pending = await ProductorderService.GetQueuedOrderAsync();
+        if (pending.accessed && pending.pendingOrder is not null)
+        {
+            Orders.ToList().Add(pending.pendingOrder);
+        }
+        else
+        {
+            Orders = (await ProductorderService.GetOrdersAsync())
+            .Where(o => o.Status.Equals(Status.Pending))
+            .OrderByDescending(o => o.OrderDateTime);
+        }*@
+
     }
-}
+    }
 
 
